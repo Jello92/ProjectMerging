@@ -9,6 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+
+import java.util.List;
 
 @Entity(name = "TB_ROOM")
 @Getter

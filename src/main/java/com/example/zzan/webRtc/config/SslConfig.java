@@ -1,4 +1,4 @@
-package com.example.zzan.webChat.config;
+package com.example.zzan.webRtc.config;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;

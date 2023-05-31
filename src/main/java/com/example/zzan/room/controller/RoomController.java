@@ -26,7 +26,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/main")
-    public ResponseDto<List<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseDto<List<RoomResponseDto>> getRooms(@PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return roomService.getRooms(pageable);
     }
 
@@ -57,7 +57,7 @@ public class RoomController {
 
 
     @GetMapping("/room/{roomId}")
-    public ResponseDto<RoomResponseDto> enterRoom(Model model, @PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return roomService.enterRoom(model, roomId,userDetails.getUser());
+    public ResponseDto<RoomResponseDto> enterRoom( @PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return roomService.enterRoom(roomId,userDetails.getUser());
     }
 }

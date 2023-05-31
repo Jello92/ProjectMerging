@@ -1,20 +1,9 @@
-package com.example.zzan.webChat.controller;
+package com.example.zzan.webRtc.controller;
 
-import com.example.zzan.webChat.dto.ChatRoomMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import java.util.ArrayList;
+
 //클라이언트와 서버 간의 채팅 메시지를 처리하는 클래스
 @Slf4j//클래스 내에서 로그를 기록할 때 사용
 @RequiredArgsConstructor

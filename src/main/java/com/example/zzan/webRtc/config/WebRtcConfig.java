@@ -1,6 +1,6 @@
-package com.example.zzan.webChat.config;
+package com.example.zzan.webRtc.config;
 
-import com.example.zzan.webChat.rtc.SignalHandler;
+import com.example.zzan.webRtc.rtc.SignalHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

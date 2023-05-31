@@ -1,4 +1,4 @@
-package com.example.zzan.webChat.controller;
+package com.example.zzan.webRtc.controller;
 
 // import com.example.zzan.webChat.service.ChatService.ChatServiceMain;
 import lombok.RequiredArgsConstructor;

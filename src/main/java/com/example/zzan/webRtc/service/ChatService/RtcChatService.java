@@ -1,9 +1,10 @@
-package com.example.zzan.webChat.service.ChatService;
+package com.example.zzan.webRtc.service.ChatService;
 
+import com.example.zzan.global.dto.ResponseDto;
 import com.example.zzan.room.dto.RoomResponseDto;
 // import com.example.zzan.webChat.dto.RoomResponseDto;
-import com.example.zzan.webChat.dto.ChatRoomMap;
-import com.example.zzan.webChat.dto.WebSocketMessage;
+import com.example.zzan.webRtc.dto.UserListMap;
+import com.example.zzan.webRtc.dto.WebSocketMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Slf4j
@@ -46,17 +46,19 @@ public class RtcChatService {
 // return room;
 // }
 
-    public Map<String, WebSocketSession> getClients(RoomResponseDto room) {
+    public Map<Long, WebSocketSession> getUser (RoomResponseDto roomResponseDto) {
 
-        Optional<RoomResponseDto> roomDto = Optional.ofNullable(room);
+        Optional<RoomResponseDto> roomDto = Optional.ofNullable(roomResponseDto);
 
         return (Map<String, WebSocketSession>) roomDto.get().getUserList();
     }
 
-    public Map<String, WebSocketSession> addClient(RoomResponseDto room, String name, WebSocketSession session) {
-        Map<String, WebSocketSession> userList = (Map<String, WebSocketSession>) room.getUserList();
-        userList.put(name, session);
-        return userList;
+
+    public ResponseDto addUser(RoomResponseDto roomResponseDto, Long userId, WebSocketSession session) {
+        roomResponseDto.setUserList(new HashMap<>());
+        Map<Long, WebSocketSession> userList = roomResponseDto.getUserList();
+        userList.put(userId, session);
+        return ResponseDto.setSuccess("유저 리스트가 추가 되었습니다", userList);
     }
 
     // userList 에서 클라이언트 삭제
@@ -66,7 +68,7 @@ public class RtcChatService {
 
     // 유저 카운터 return
     public boolean findUserCount(WebSocketMessage webSocketMessage){
-        RoomResponseDto room = ChatRoomMap.getInstance().getChatRooms().get(webSocketMessage.getData());
+        RoomResponseDto room = UserListMap.getInstance().getUserMap().get(webSocketMessage.getData());
         log.info("ROOM COUNT : [{} ::: {}]",room.toString(),room.getUserList().size());
         return room.getUserList().size() > 1;
     }

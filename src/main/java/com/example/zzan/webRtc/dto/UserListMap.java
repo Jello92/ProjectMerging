@@ -1,4 +1,4 @@
-package com.example.zzan.webChat.dto;
+package com.example.zzan.webRtc.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,19 +12,19 @@ import com.example.zzan.room.dto.RoomResponseDto;
 // 모든 ChatService 에서 ChatRooms가 공통된 필요함으로
 @Getter
 @Setter
-public class ChatRoomMap {
-    private static ChatRoomMap chatRoomMap = new ChatRoomMap();
-    private Map<String, RoomResponseDto> chatRooms = new LinkedHashMap<>();
+public class UserListMap {
+    private static UserListMap userListMap = new UserListMap();
+    private Map<Long, RoomResponseDto> userMap = new LinkedHashMap<>();
 
 //    @PostConstruct
 //    private void init() {
 //        chatRooms = new LinkedHashMap<>();
 //    }
 
-    private ChatRoomMap(){}
+    private UserListMap(){}
 
-    public static ChatRoomMap getInstance(){
-        return chatRoomMap;
+    public static UserListMap getInstance(){
+        return userListMap;
     }
 
 }

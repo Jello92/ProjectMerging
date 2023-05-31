@@ -1,4 +1,4 @@
-package com.example.zzan.webChat.dto;
+package com.example.zzan.webRtc.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

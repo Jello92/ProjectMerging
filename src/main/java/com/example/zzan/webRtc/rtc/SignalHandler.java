@@ -1,15 +1,12 @@
-package com.example.zzan.webChat.rtc;
+package com.example.zzan.webRtc.rtc;
 
 import com.example.zzan.room.dto.RoomResponseDto;
-import com.example.zzan.webChat.dto.ChatRoomDto;
-import com.example.zzan.webChat.dto.ChatRoomMap;
-import com.example.zzan.webChat.dto.WebSocketMessage;
-// import com.example.zzan.webChat.service.ChatService.ChatServiceMain;
-//import com.example.zzan.webChat.service.ChatService.RtcChatService;
-import com.example.zzan.webChat.service.ChatService.RtcChatService;
+import com.example.zzan.webRtc.dto.UserListMap;
+import com.example.zzan.webRtc.dto.WebSocketMessage;
+import com.example.zzan.webRtc.service.ChatService.RtcChatService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.binary.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,8 +18,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
-
 
 
 @Component
@@ -36,7 +31,7 @@ public class SignalHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     // roomID to room Mapping
-    private Map<String, RoomResponseDto> rooms = ChatRoomMap.getInstance().getChatRooms();
+    private Map<Long, RoomResponseDto> rooms = UserListMap.getInstance().getUserMap();
 
     // message types, used in signalling:
     // SDP Offer message
@@ -56,39 +51,36 @@ public class SignalHandler extends TextWebSocketHandler {
         logger.info("[ws] Session has been closed with status [{} {}]", status, session);
     }
 
-    // 소켓 연결되었을 때 이벤트 처리
-//    @Override
-//    public void afterConnectionEstablished(WebSocketSession session) {
-//        /*
-//        * 웹 소켓이 연결되었을 때 클라이언트 쪽으로 메시지를 발송한다
-//        * 이때 원본 코드에서는 rooms.isEmpty() 가 false 를 전달한다. 이 의미는 현재 room 에 아무도 없다는 것을 의미하고 따라서 추가적인 ICE 요청을 하지 않도록 한다.
-//        *
-//        * 현재 채팅 코드에서는 chatRoom 안에 userList 안에 user가 저장되기 때문에 rooms 이 아닌 userList 에 몇명이 있는지 확인해야 했다.
-//        * 따라서 js 쪽에서 ajax 요청을 통해 rooms 가 아닌 userList 에 몇명이 있는지 확인하고
-//        * 2명 이상인 경우에만 JS에서 이와 관련된 변수를 true 가 되도록 변경하였다.
-//        *
-//        * 이렇게 true 상태가 되면 이후에 들어온 유저가 방안에 또 다른 유저가 있음을 확인하고,
-//        * P2P 연결을 시작한다.
-//        * */
-////        sendMessage(session, new WebSocketMessage("Server", MSG_TYPE_JOIN, Boolean.toString(!rooms.isEmpty()), null, null));
-//    }
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) {
+
+//        WebSocketMessage message = objectMapper.readValue(textMessage.getPayload(), WebSocketMessage.class);
+//        Long serverId = message.getFrom(); // replace with actual server id
+//        Long roomId = (Long) session.getAttributes().get("roomId"); // replace with actual room id
+//        sendMessage(session, new WebSocketMessage(serverId, MSG_TYPE_JOIN, roomId, null, null));
+
+        sendMessage(session, new WebSocketMessage(null, MSG_TYPE_JOIN, null, null, null));
+    }
 
     // 소켓 메시지 처리
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) {
         // a message has been received
+        //session=메세지가 들어오면 들어오는 타입에 대해서 종류별로 응답
         try {
             // 웹 소켓으로부터 전달받은 메시지
             // 소켓쪽에서는 socket.send 로 메시지를 발송한다 => 참고로 JSON 형식으로 변환해서 전달해온다
             WebSocketMessage message = objectMapper.readValue(textMessage.getPayload(), WebSocketMessage.class);
             logger.debug("[ws] Message of {} type from {} received", message.getType(), message.getFrom());
             // 유저 uuid 와 roomID 를 저장
-            String userUUID = message.getFrom(); // 유저 uuid
-            String roomId = message.getData(); // roomId
+            Long userId = message.getFrom(); // 유저 uuid
+            Long roomId = message.getData(); // roomId
 
             logger.info("Message {}", message.toString());
 
             RoomResponseDto room;
+
+            logger.info("여기냐ㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑ");
             // 메시지 타입에 따라서 서버에서 하는 역할이 달라진다
             switch (message.getType()) {
 
@@ -107,24 +99,18 @@ public class SignalHandler extends TextWebSocketHandler {
                     /* 여기도 마찬가지 */
                     RoomResponseDto roomDto = rooms.get(roomId);
 
-                    if (roomDto != null) {
-                        Map<String, WebSocketSession> clients = rtcChatService.getClients(roomDto);
 
-                        /*
-                         * Map.Entry 는 Map 인터페이스 내부에서 Key, Value 를 쌍으로 다루기 위해 정의된 내부 인터페이스
-                         * 보통 key 값들을 가져오는 entrySet() 과 함께 사용한다.
-                         * entrySet 을 통해서 key 값들을 불러온 후 Map.Entry 를 사용하면서 Key 에 해당하는 Value 를 쌍으로 가져온다
-                         *
-                         * 여기를 고치면 1:1 대신 1:N 으로 바꿀 수 있지 않을까..?
-                         */
-                        for(Map.Entry<String, WebSocketSession> client : clients.entrySet())  {
+                    if (roomDto != null) {
+                        Map<Long, WebSocketSession> clients = rtcChatService.getUser(roomDto);
+
+                        for(Map.Entry<Long, WebSocketSession> client : clients.entrySet())  {
 
                             // send messages to all clients except current user
-                            if (!client.getKey().equals(userUUID)) {
+                            if (!client.getKey().equals(userId)) {
                                 // select the same type to resend signal
                                 sendMessage(client.getValue(),
                                         new WebSocketMessage(
-                                                userUUID,
+                                                userId,
                                                 message.getType(),
                                                 roomId,
                                                 candidate,
@@ -137,14 +123,16 @@ public class SignalHandler extends TextWebSocketHandler {
                 // identify user and their opponent
                 case MSG_TYPE_JOIN:
                     // message.data contains connected room id
-                    logger.debug("[ws] {} has joined Room: #{}", userUUID, message.getData());
+                    logger.info("여기는 들어오니?????????????????????????");
+                    logger.debug("[ws] {} has joined Room: #{}", userId, message.getData());
 
-//                    room = rtcChatService.findRoomByRoomId(roomId)
-//                            .orElseThrow(() -> new IOException("Invalid room number received!"));
-                    room = ChatRoomMap.getInstance().getChatRooms().get(roomId);
+
+                    room = UserListMap.getInstance().getUserMap().get(roomId);
+                    logger.info("여기도 들어와?????????????????????????");
 
                     // // room 안에 있는 userList 에 유저 추가
-                     rtcChatService.addClient(room, userUUID, session);
+                     rtcChatService.addUser(room, userId, session);
+                    logger.info("여기까지 제발 들어와?????????????????????????");
 
                     // // 채팅방 입장 후 유저 카운트+1
                     // chatServiceMain.plusUserCnt(roomId);
@@ -154,7 +142,7 @@ public class SignalHandler extends TextWebSocketHandler {
 
                 case MSG_TYPE_LEAVE:
                     // message data contains connected room id
-                    logger.info("[ws] {} is going to leave Room: #{}", userUUID, message.getData());
+                    logger.info("[ws] {} is going to leave Room: #{}", userId, message.getData());
 
                     // roomID 기준 채팅방 찾아오기
                     room = rooms.get(message.getData());

@@ -1,13 +1,12 @@
-// package com.example.zzan.webChat.controller;
+// package com.example.zzan.webRtc.controller;
 //
-// import com.example.zzan.webChat.dto.WebSocketMessage;
-// import com.example.zzan.webChat.service.ChatService.RtcChatService;
+// import com.example.zzan.webRtc.dto.WebSocketMessage;
+// import com.example.zzan.webRtc.service.ChatService.RtcChatService;
 // import lombok.RequiredArgsConstructor;
 // import lombok.extern.slf4j.Slf4j;
 // import org.springframework.web.bind.annotation.ModelAttribute;
 // import org.springframework.web.bind.annotation.PostMapping;
 // import org.springframework.web.bind.annotation.RestController;
-//
 //
 // @RestController
 // @RequiredArgsConstructor
@@ -16,10 +15,9 @@
 //
 //     private final RtcChatService rtcChatService;
 //
-//     @PostMapping("/webrtc/usercount")
+//@PostMapping("/webrtc/usercount")
 //     public String webRTC(@ModelAttribute WebSocketMessage webSocketMessage) {
 //         log.info("MESSAGE : {}", webSocketMessage.toString());
 //         return Boolean.toString(rtcChatService.findUserCount(webSocketMessage));
 //     }
 // }
-//

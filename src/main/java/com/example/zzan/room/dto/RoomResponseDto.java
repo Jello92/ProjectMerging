@@ -3,11 +3,15 @@ package com.example.zzan.room.dto;
 import com.example.zzan.room.entity.Category;
 import com.example.zzan.room.entity.GenderSetting;
 import com.example.zzan.room.entity.Room;
+import com.example.zzan.user.entity.User;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Null;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
