@@ -6,6 +6,7 @@ import com.example.zzan.room.entity.Room;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class RoomResponseDto {
     private int alcohol;
     private String userImageUrl;
     private String roomImageUrl;
-    private Map<String, ?> userList;
+    private Map<Long, WebSocketSession> userList;
 
     public RoomResponseDto(Room room){
         this.roomId = room.getId();
@@ -42,5 +43,15 @@ public class RoomResponseDto {
         this.alcohol = room.getHostUser().getAlcohol();
         this.userImageUrl = room.getHostUser().getUserImage();
         this.roomImageUrl = room.getRoomImage();
+        this.userList = new HashMap<>();
     }
+
+//    public RoomResponseDto(Long userId, WebSocketSession session){
+//        this.userList = new HashMap<>();
+//        this.userList.put(userId, session);
+//    }
+//
+
+
+
 }

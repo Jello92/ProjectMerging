@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WebSocketMessage {
-    private String from; // 보내는 유저 UUID
+    private Long from; // 보내는 유저 UUID
     private String type; // 메시지 타입
-    private String data; // roomId
+    private Long data; // roomId
     private Object candidate; // 상태
     private Object sdp; // sdp 정보
 }
