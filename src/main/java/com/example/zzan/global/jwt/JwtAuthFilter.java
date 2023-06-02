@@ -2,6 +2,7 @@ package com.example.zzan.global.jwt;
 
 import com.example.zzan.global.exception.ExceptionEnum;
 import com.example.zzan.global.util.JwtUtil;
+import com.example.zzan.user.entity.User;
 import com.example.zzan.user.entity.UserRole;
 import com.example.zzan.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -54,8 +55,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } else if (refresh_token != null) {
             if (jwtUtil.refreshTokenValidation(refresh_token)) {
                 String userEmail = jwtUtil.getUserInfoFromToken(refresh_token);
-                setAuthentication(userEmail);
-                String newAccessToken = jwtUtil.createToken(userEmail, UserRole.USER, "Access");
+                User user = userRepository.findUserByEmail(userEmail)
+                        .orElse(null);
+                setAuthentication(user.getEmail());
+                String newAccessToken = jwtUtil.createToken(user, UserRole.USER, "Access");
                 jwtUtil.setHeaderAccessToken(response, newAccessToken);
             } else {
                 sendErrorResponse(response, ExceptionEnum.ACCESS_TOKEN_NOT_FOUND);
