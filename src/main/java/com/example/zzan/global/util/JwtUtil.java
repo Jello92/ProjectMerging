@@ -36,7 +36,7 @@ public class JwtUtil {
     public static final String REFRESH_KEY = "REFRESH_KEY";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TIME = 60 * 60 * 1000L;
+    private static final long ACCESS_TIME = 7 * 24 * 60 * 60 * 1000L;       // 테스트 기간 동안만 1주일로 설정 -> 테스트 이후에 1시간으로 변경해야함
     private static final long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     private final UserDetailsServiceImpl userDetailsService;
